@@ -11,6 +11,7 @@ def log_location(name, woeid)
    location = Location.find_or_create_by(name: name, woeid: woeid) 
 end
 
+
 def run_application
     puts "Please enter your name:"
     name_input = gets.chomp
@@ -18,8 +19,9 @@ def run_application
     puts "Please enter your age:"
     age_input = gets.chomp.to_i
     
-    login_user(name_input, age_input)
-
+    user1 = login_user(name_input, age_input)
+    user1[:id]
+    binding.pry
     puts "Enter the name of a city to see the weather:"
     user_input = gets.chomp
     if user_input.match(/\s/)
