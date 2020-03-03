@@ -11,6 +11,10 @@ def log_location(name, woeid)
    location = Location.find_or_create_by(name: name, woeid: woeid) 
 end
 
+def create_weather_instance(user_id, location_id)
+    weather = Weather.find_or_create_by(user_id: user_id, location_id: location_id)
+end
+
 def run_application
     puts "Please enter your name:"
     name_input = gets.chomp
