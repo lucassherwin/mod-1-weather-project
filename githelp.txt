@@ -5,3 +5,10 @@ git co "branch name"
 git push
 git pull
 git merge migrations
+
+to add to git
+git add . 
+git commit -m "message"
+git push
+git co master (goes to master branch)
+git merge _____ <whatever branch name
