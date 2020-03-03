@@ -21,7 +21,10 @@ def run_application
     login_user(name_input, age_input)
 
     puts "Enter the name of a city to see the weather:"
-    user_input = gets.chomp.gsub!(/\s/,"%20")
+    user_input = gets.chomp
+    if user_input.match(/\s/)
+        user_input.gsub!(/\s/,"%20")
+    end 
     # user_input.gsub!(/\s/,"%20")
     unparsed_data = RestClient.get("https://www.metaweather.com/api/location/search/?query=#{user_input}")
     parsed_data = JSON.parse(unparsed_data)
