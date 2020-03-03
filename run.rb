@@ -22,8 +22,9 @@ def run_application
     puts "Please enter your age:"
     age_input = gets.chomp.to_i
     
-    login_user(name_input, age_input)
-
+    user1 = login_user(name_input, age_input)
+    user1[:id]
+    
     puts "Enter the name of a city to see the weather:"
     user_input = gets.chomp
     if user_input.match(/\s/)
