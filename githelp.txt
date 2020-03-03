@@ -1,0 +1,7 @@
+git add . 
+git commit -m "filename"
+git co -b "new branch name"
+git co "branch name"
+git push
+git pull
+git merge migrations
