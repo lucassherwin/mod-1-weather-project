@@ -1,10 +1,10 @@
 source "https://rubygems.org"
 
-gem 'pry'
-gem 'sqlite3'
-gem 'rake'
-gem 'require_all'
 gem 'activerecord'
 gem 'sinatra-activerecord'
-gem 'json'
+gem 'rake'
+gem 'require_all'
+gem 'sqlite3'
+gem 'pry'
 gem 'rest-client'
+gem 'json'

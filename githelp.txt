@@ -6,7 +6,7 @@ git push
 git pull
 git merge migrations
 
-to add to git
+to add to git ; 
 git add . 
 git commit -m "message"
 git push
