@@ -71,7 +71,7 @@ def run_application
     weather_instance = create_weather_instance(user, city)
     test = weather_instance.weather_status = get_weather_status
 
-    binding.pry
+    #binding.pry
     # weather_data_hash = {
     #     user_id: user[:id],
     #     location_id: location[:id],
