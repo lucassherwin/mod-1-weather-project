@@ -45,43 +45,25 @@ def get_city
     return user_input
 end
 
-def update_weather_status()
+# def update_weather_status()
     
-end
+# end
 
 # def update_weather_status()
     
 #     Weather.find_or_create_by()
 # end
-def get_history
-    past_locations = []
-    self.user_id == users.user_id
-    Weather.map 
-end
 
-
-def run_application
-    user = get_user
-    # binding.pry
-    
-   
-    city = get_city
-    # binding.pry
-
-    
-
+def create_new_location(city)
     unparsed_data = RestClient.get("https://www.metaweather.com/api/location/search/?query=#{city}")
     parsed_data = JSON.parse(unparsed_data)
     get_woeid = parsed_data[0]["woeid"]
     city_name = parsed_data[0]["title"]
     
     location = log_location(city, get_woeid)
+end
 
-
-    unparsed_weather_data = RestClient.get("https://www.metaweather.com/api/location/#{get_woeid}")
-    parsed_weather_data = JSON.parse(unparsed_weather_data)
-
-    # binding.pry
+def create_new_weather_instance
     get_weather_status = parsed_weather_data["consolidated_weather"][0]["weather_state_name"]
     temp_in_c = parsed_weather_data["consolidated_weather"][0]["the_temp"]
     temp_in_f = temp_in_c * (9/5) + 32
@@ -90,17 +72,26 @@ def run_application
     location_id = location[:id]
     weather_instance = create_weather_instance(user_id, location_id, city_name, get_weather_status, temp_in_c, temp_in_f, current_humidity)
     weather_status = weather_instance.weather_status
-# binding.pry
+end
 
-    # weather_data_hash = {
-    #     user_id: user[:id],
-    #     location_id: location[:id],
-    #     city: city_name,
-    #     weather_status: get_weather_status,
-    #     temp_c: temp_in_c,
-    #     temp_f: temp_in_f,
-    #     humidity: current_humidity
-    # }
+def run_application
+    user = get_user
+    city = get_city
+    
+    city_name = create_new_location(city)
+    woeid = create_new_location(city)
+
+    temp_in_f = create_new_weather_instance.temp_f
+    temp_in_c = create_new_weather_instance.temp_c
+    current_humidity = create_new_weather_instance.current_humidity
+    user_id = create_new_weather_instance.user_id
+    location_id = create_new_weather_instance.location_id
+    get_weather_status = create_new_weather_instance.get_weather_status
+
+    unparsed_weather_data = RestClient.get("https://www.metaweather.com/api/location/#{woeid}")
+    parsed_weather_data = JSON.parse(unparsed_weather_data)
+
+
    def message_output
     puts "- - - - - - - - - - - - - - - - - - - -"
     puts "- - - Today's weather for #{city_name}  - - - "
@@ -115,7 +106,6 @@ def run_application
     #add_location = add new location -> rerun with new location
     #set_default = set default location
 
-<<<<<<< HEAD
     puts "Additonal Commands:"
     puts "Type 'history' to see past locations"
     puts "Type 'add_location to add a new city to see the weather"
@@ -134,7 +124,6 @@ def run_application
         delete_all
     end
     binding.pry
-=======
     # puts "Additonal Commands:"
     # puts "Type 'history' to see past locations"
     # puts "Type 'new_search to add a new city to see the weather"
@@ -158,7 +147,6 @@ end
 def delete_last
     find_user = Weather.select { |object| object.user_id == user[:id] }
     find_user.last.delete
->>>>>>> 511d15cea8acdab4fc66c116573baee9783a5b9b
 end
     def delete_all
       Weather.where(user_id: user[:id]).delete_all
