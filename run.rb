@@ -132,11 +132,14 @@ def run_application
     elsif user_input == "delete_all"
         delete_all
     end
-    # binding.pry
+    binding.pry
 end
+    def delete_all
+      Weather.where(user_id: user[:id]).delete_all
+    end
 
 run_application
 
-# binding.pry
+ binding.pry
 
-# puts "test"
+ puts "test"
