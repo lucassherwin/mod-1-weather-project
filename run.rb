@@ -60,7 +60,6 @@ def get_history
 end
 
 
-
 def run_application
     user = get_user
     # binding.pry
@@ -102,37 +101,43 @@ def run_application
     #     temp_f: temp_in_f,
     #     humidity: current_humidity
     # }
-   
+   def message_output
     puts "- - - - - - - - - - - - - - - - - - - -"
     puts "- - - Today's weather for #{city_name}  - - - "
     puts "- - Currently #{weather_status} in #{city_name} - - "
     puts "- It is currently #{temp_in_c}C° and #{temp_in_f}F°. -"
     puts "- - - The current humidity is #{current_humidity}. - - - "
     puts "- - - - - - - - - - - - - - - - - - - -"
+   end
 
     #additional commands
     #history = show search history
     #add_location = add new location -> rerun with new location
     #set_default = set default location
 
-    puts "Additonal Commands:"
-    puts "Type 'history' to see past locations"
-    puts "Type 'add_location to add a new city to see the weather"
-    puts "Type 'delete_last' to delete last search location"
-    puts "Type 'delete_all' to delete all search history"
-    user_input = gets.chomp
-    if user_input == "history"
-        show_history
-    elsif user_input == "add_location"
-        puts "Enter a city:"
-        user_input = gets.chomp
-        add_city(user_input)
-    elsif user_input == "delete_last"
-        delete_last
-    elsif user_input == "delete_all"
-        delete_all
-    end
-    # binding.pry
+    # puts "Additonal Commands:"
+    # puts "Type 'history' to see past locations"
+    # puts "Type 'new_search to add a new city to see the weather"
+    # puts "Type 'delete_last' to delete last search location"
+    # puts "Type 'delete_all' to delete all search history"
+    # user_input = gets.chomp
+    # if user_input == "history"
+    #     show_history
+    # elsif user_input == "new_search"
+    #     puts "Enter a city:"
+    #     user_input = gets.chomp
+    #     add_city(user_input)
+    # elsif user_input == "delete_last"
+    #     delete_last
+    # elsif user_input == "delete_all"
+    #     delete_all
+    # end
+    binding.pry
+end
+
+def delete_last
+    find_user = Weather.select { |object| object.user_id == user[:id] }
+    find_user.last.delete
 end
 
 run_application
