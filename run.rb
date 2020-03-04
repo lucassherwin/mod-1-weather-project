@@ -16,7 +16,8 @@ end
 #     weather = Weather.find_or_create_by(user_id: user_id, location_id: location_id, city: city, weather_status: weat)
 # end
 def create_weather_instance(user_id, location_id, city, weather_status, temp_c, temp_f, humidity)
-    Weather.create(user_id: user_id, location_id: location_id, city: city, weather_status: weather_status, temp_c: temp_c, temp_f: temp_f, humidity: humidity)
+    Weather.create(user_id: user_id, location_id: location_id, city: city, weather_status: weather_status, temp_c: temp_c,
+    temp_f: temp_f, humidity: humidity)
 end
 
 def get_user
@@ -45,40 +46,13 @@ def get_city
     return user_input
 end
 
-def update_weather_status()
-    
-end
-
-# def update_weather_status()
-    
-#     Weather.find_or_create_by()
-# end
-def get_history
-    past_locations = []
-    self.user_id == users.user_id
-    Weather.map 
-end
-
-
-
-def run_application
-    user = get_user
-    # binding.pry
-    
-   
-    city = get_city
-    # binding.pry
-
-    
-
+def get_woeid(city)
     unparsed_data = RestClient.get("https://www.metaweather.com/api/location/search/?query=#{city}")
     parsed_data = JSON.parse(unparsed_data)
-    get_woeid = parsed_data[0]["woeid"]
-    city_name = parsed_data[0]["title"]
-    
-    location = log_location(city, get_woeid)
+    parsed_data[0]["woeid"]
+end
 
-
+def new_weather_instance(get_woeid)
     unparsed_weather_data = RestClient.get("https://www.metaweather.com/api/location/#{get_woeid}")
     parsed_weather_data = JSON.parse(unparsed_weather_data)
 
@@ -91,24 +65,53 @@ def run_application
     location_id = location[:id]
     weather_instance = create_weather_instance(user_id, location_id, city_name, get_weather_status, temp_in_c, temp_in_f, current_humidity)
     weather_status = weather_instance.weather_status
-# binding.pry
 
-    # weather_data_hash = {
-    #     user_id: user[:id],
-    #     location_id: location[:id],
-    #     city: city_name,
-    #     weather_status: get_weather_status,
-    #     temp_c: temp_in_c,
-    #     temp_f: temp_in_f,
-    #     humidity: current_humidity
-    # }
-   
+    city_name = get_city
     puts "- - - - - - - - - - - - - - - - - - - -"
     puts "- - - Today's weather for #{city_name}  - - - "
     puts "- - Currently #{weather_status} in #{city_name} - - "
     puts "- It is currently #{temp_in_c}C° and #{temp_in_f}F°. -"
     puts "- - - The current humidity is #{current_humidity}. - - - "
     puts "- - - - - - - - - - - - - - - - - - - -"
+end
+
+def run_application
+    user = get_user
+    # binding.pry
+    
+   
+    city = get_city
+    # binding.pry
+
+    # unparsed_data = RestClient.get("https://www.metaweather.com/api/location/search/?query=#{city}")
+    # parsed_data = JSON.parse(unparsed_data)
+    # get_woeid = parsed_data[0]["woeid"]
+    # city_name = parsed_data[0]["title"]
+
+    woeid = get_woeid(city)
+    
+    location = log_location(city, woeid)
+    new_weather_instance(woeid)
+
+    # unparsed_weather_data = RestClient.get("https://www.metaweather.com/api/location/#{get_woeid}")
+    # parsed_weather_data = JSON.parse(unparsed_weather_data)
+
+    # # binding.pry
+    # get_weather_status = parsed_weather_data["consolidated_weather"][0]["weather_state_name"]
+    # temp_in_c = parsed_weather_data["consolidated_weather"][0]["the_temp"]
+    # temp_in_f = temp_in_c * (9/5) + 32
+    # current_humidity = parsed_weather_data["consolidated_weather"][0]["humidity"]
+    # user_id = user[:id]
+    # location_id = location[:id]
+    # weather_instance = create_weather_instance(user_id, location_id, city_name, get_weather_status, temp_in_c, temp_in_f, current_humidity)
+    # weather_status = weather_instance.weather_status
+  
+    # puts "- - - - - - - - - - - - - - - - - - - -"
+    # puts "- - - Today's weather for #{city_name}  - - - "
+    # puts "- - Currently #{weather_status} in #{city_name} - - "
+    # puts "- It is currently #{temp_in_c}C° and #{temp_in_f}F°. -"
+    # puts "- - - The current humidity is #{current_humidity}. - - - "
+    # puts "- - - - - - - - - - - - - - - - - - - -"
 
     #additional commands
     #history = show search history
@@ -117,29 +120,32 @@ def run_application
 
     puts "Additonal Commands:"
     puts "Type 'history' to see past locations"
-    puts "Type 'add_location to add a new city to see the weather"
+    puts "Type 'new_search to add a new city to see the weather"
     puts "Type 'delete_last' to delete last search location"
     puts "Type 'delete_all' to delete all search history"
+
     user_input = gets.chomp
+
     if user_input == "history"
-        show_history
-    elsif user_input == "add_location"
+        all_searches = Weather.all.select { |obj| obj.user_id == user[:id]}
+        puts all_searches.map { |obj| obj.city}.uniq
+    elsif user_input == "new_search"
         puts "Enter a city:"
-        user_input = gets.chomp
-        add_city(user_input)
+        new_city = get_city
+        new_woeid = get_woeid(new_city)
+        new_weather_instance(new_woeid)
+        # user_input = gets.chomp
+        # add_city(user_input)
     elsif user_input == "delete_last"
-        delete_last
+        
     elsif user_input == "delete_all"
-        delete_all
+        Weather.where(user_id: user[:id]).delete_all
     end
-    binding.pry
+    # binding.pry
 end
-    def delete_all
-      Weather.where(user_id: user[:id]).delete_all
-    end
 
 run_application
 
- binding.pry
+#  binding.pry
 
- puts "test"
+#  puts "test"
