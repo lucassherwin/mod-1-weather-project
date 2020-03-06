@@ -115,7 +115,6 @@ def run_application
     #add_location = add new location -> rerun with new location
     #set_default = set default location
 
-<<<<<<< HEAD
     puts "Additonal Commands:"
     puts "Type 'history' to see past locations"
     puts "Type 'add_location to add a new city to see the weather"
@@ -133,8 +132,7 @@ def run_application
     elsif user_input == "delete_all"
         delete_all
     end
-    binding.pry
-=======
+    # binding.pry
     # puts "Additonal Commands:"
     # puts "Type 'history' to see past locations"
     # puts "Type 'new_search to add a new city to see the weather"
@@ -152,13 +150,12 @@ def run_application
     # elsif user_input == "delete_all"
     #     delete_all
     # end
-    binding.pry
+    # binding.pry
 end
 
 def delete_last
     find_user = Weather.select { |object| object.user_id == user[:id] }
     find_user.last.delete
->>>>>>> 511d15cea8acdab4fc66c116573baee9783a5b9b
 end
     def delete_all
       Weather.where(user_id: user[:id]).delete_all
@@ -166,6 +163,6 @@ end
 
 run_application
 
- binding.pry
+#  binding.pry
 
- puts "test"
+#  puts "test"
