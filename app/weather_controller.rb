@@ -1,6 +1,9 @@
+def welcome_message
+    spacing("- - - - - Welcome to Mod-1-Weathers - - - - -")
+end
 
-def login_user(name, age)
-    user = User.find_or_create_by(name: name, age: age)
+def login_user(name, identifier)
+    user = User.find_or_create_by(name: name, identifier: identifier)
 end
 
 def log_location(name, woeid)
@@ -20,10 +23,10 @@ def spacing(entry)
 end
 
 def get_user
-    spacing("Please enter your first and last name:")
+    spacing("Please enter your desired username:")
     name_input = gets.chomp
     if name_input == ""
-        puts "Please enter a name."
+        puts "Please enter a username."
         get_user
     
     else
@@ -31,8 +34,8 @@ def get_user
     #     # puts "Please enter age as an integer!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
     #     age_input = gets.chomp
     # # else 
-    age = get_age
-        user = login_user(name_input, age) 
+    identifier = get_identifier
+        user = login_user(name_input, identifier) 
     end
     # end
     # id = user[:id]
@@ -42,14 +45,14 @@ def letters?(string)
     string.chars.any? { |char| ('a'..'z').include? char.downcase }
 end
 
-def get_age
-    spacing("Please enter your age on your numberpad:")
-    age_input = gets.chomp
-    if letters?(age_input) == true
-        puts "#{age_input} is not a valid entry."
-        get_age
+def get_identifier
+    spacing("Please enter your desired identifier on your numberpad:")
+    identifier_input = gets.chomp
+    if letters?(identifier_input) == true
+        puts "#{identifier_input} is not a valid entry."
+        get_identifier
     else 
-    age = age_input.to_i
+    identifier = identifier_input.to_i
     end
 end
 
@@ -57,10 +60,11 @@ end
 
 def get_city
     spacing("Enter the name of a city to see the weather:")
-    user_input = gets.chomp
+    user_input = gets.chomp.strip
     user_input_s = user_input.to_s
     if user_input_s == "" 
-        puts "#{user_input} is not a valid entry."
+        puts "#{user_input} is not a valid entry." 
+        puts "Please check your spelling and try again."
         get_city
     end
     if user_input.match(/\s/)
@@ -70,9 +74,15 @@ def get_city
 end
 
 def update_name(user)
-    puts "Please put your new name"
+    puts "Please put your new desired username"
     new_name = gets.chomp 
     user.name = new_name
+end
+
+def update_id(user)
+    puts "Please put your new desired identifier on your numberpad"
+    new_identifier = gets.chomp
+    user.identifier = new_identifier
 end
 
 def get_history(user)
@@ -84,11 +94,12 @@ def get_history(user)
 end
 
 def info(user)
-    puts "Name: #{user.name}  |  Age: #{user.age}"
+    puts "Name: #{user.name}  |  Identifier: #{user.identifier}"
 end
 
 def quit_app
     spacing("Thank you for using Mod-1-Weathers. Good bye.")
+    puts "Created by Joseph Cha, Lucas Sherwin, Diana Ponce."
 end
 
 def delete_last(user)
@@ -105,8 +116,7 @@ def additional_commands
     puts "Additonal Commands:"
     puts "Type 'history' to see past locations. (Under development)"
     puts "Type 'new_search to add a new city to see the weather."
-    puts "Type 'info' for name & age."
-    puts "Type 'new_name' to change your name."
+    puts "Type 'info' for Username & Identifier."
     puts "Type 'quit' to exit application."
 end
 
@@ -116,6 +126,12 @@ def additional_commands_2
     puts "Type 'delete_last' to delete last search location."
     puts "Type 'delete_all' to delete all search history."
     puts "Type 'quit' to exit application."
+end
+
+def additional_commands_3 
+    puts "Type 'new_username' to change your username."
+    puts "Type 'new_id' to change your identifier"
+    puts "Type 'back' for previous list of available commands."
 end
 
 def user_input_additional_commands(user)
@@ -130,12 +146,8 @@ def user_input_additional_commands(user)
         user_input_additional_commands(user)
     elsif user_input == "info"
         info(user)
-        additional_commands
-        user_input_additional_commands(user)
-    elsif user_input == "new_name"
-        update_name(user)
-        additional_commands
-        user_input_additional_commands(user)
+        additional_commands_3
+        user_input_additional_commands_3(user)
     elsif user_input == "quit"
        quit_app
     else
@@ -168,8 +180,24 @@ def user_input_additional_commands_2(user)
     end
 end
 
+def user_input_additional_commands_3(user)
+    user_input = gets.chomp
+    if user_input == "new_username"
+        update_name(user)
+        additional_commands
+        user_input_additional_commands(user)
+    elsif user_input == "new_id"
+        update_id(user)
+        additional_commands
+        user_input_additional_commands(user)
+    elsif user_input == "back"
+        additional_commands
+        user_input_additional_commands(user)
+    end
+end
+
 def returning_weather(user)
-    city = get_city 
+    city = get_city
 
     unparsed_data = RestClient.get("https://www.metaweather.com/api/location/search/?query=#{city}")
 
@@ -207,12 +235,17 @@ def returning_weather(user)
     end
 end
 
+
+
+
+
+
+
+
 def run_application
+    welcome_message
     user = get_user
     returning_weather(user)
-    # binding.pry
     additional_commands
     user_input_additional_commands(user)
-
-    # binding.pry
 end
